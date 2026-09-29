@@ -1,0 +1,260 @@
+FinanTrack — Especificação de Requisitos V1.0.0
+
+1. Visão geral
+
+O FinanTrack é uma aplicação web de controle financeiro pessoal que permite ao usuário registrar receitas e despesas, organizar movimentações por categoria e acompanhar sua situação financeira.
+
+2. Objetivos
+
+- Facilitar o controle financeiro pessoal.
+- Permitir o acompanhamento de receitas, despesas e saldo.
+
+3. Público-alvo
+
+Pessoas que desejam organizar suas finanças pessoais por meio de uma aplicação web.
+
+4. Escopo da V1.0
+
+Incluído:
+- Cadastro, login e logout.
+- Dashboard financeiro.
+- CRUD de receitas e despesas.
+- Categorias predefinidas.
+- Filtros por tipo, categoria e período.
+- Persistência em banco de dados.
+- API REST.
+- Validação de dados e controle de acesso.
+
+Fora do escopo:
+- Integração bancária ou Pix.
+- Cartões de crédito e investimentos.
+- Metas e orçamentos.
+- Transações recorrentes.
+- Categorias personalizadas.
+- Aplicativo mobile e modo offline.
+
+5. Requisitos funcionais
+
+RF01 — Cadastro
+O sistema deve permitir criar uma conta com nome, e-mail e senha. O e-mail deve ser único.
+
+RF02 — Login
+O usuário deve conseguir autenticar-se com e-mail e senha válidos.
+
+RF03 — Logout
+O usuário deve conseguir encerrar sua sessão.
+
+RF04 — Dashboard
+O sistema deve apresentar saldo geral, receitas do mês, despesas do mês e as cinco transações mais recentes.
+
+RF05 — Criar transação
+O usuário deve poder cadastrar receita ou despesa com valor, descrição, categoria e data.
+
+RF06 — Listar transações
+O sistema deve listar as transações do usuário autenticado, da mais recente para a mais antiga.
+
+RF07 — Consultar transação
+O usuário deve poder consultar os detalhes de uma transação própria.
+
+RF08 — Editar transação
+O usuário deve poder alterar os dados de uma transação própria.
+
+RF09 — Excluir transação
+O usuário deve poder excluir uma transação própria após confirmação.
+
+RF10 — Filtrar transações
+O sistema deve permitir filtrar por tipo, categoria e período.
+
+RF11 — Categorias
+O sistema deve disponibilizar categorias predefinidas de receitas e despesas.
+
+RF12 — Isolamento de dados
+O sistema deve impedir que um usuário consulte, altere ou exclua dados financeiros de outro usuário.
+
+6. Requisitos não funcionais
+
+RNF01 — Segurança
+Senhas devem ser armazenadas usando hash seguro. Rotas privadas devem exigir autenticação.
+
+RNF02 — Validação
+Dados devem ser validados no frontend e no backend. O backend é responsável pela validação definitiva.
+
+RNF03 — Integridade monetária
+Valores monetários devem utilizar um tipo decimal apropriado, evitando cálculos com ponto flutuante binário.
+
+RNF04 — Persistência
+Os dados devem permanecer armazenados após reiniciar o servidor.
+
+RNF05 — Usabilidade
+A interface deve ser responsiva e apresentar mensagens de erro, carregamento e sucesso.
+
+RNF06 — Manutenibilidade
+O código deve ser organizado em módulos e documentado quando necessário.
+
+RNF07 — Testabilidade
+As principais regras de negócio e operações da API devem possuir testes automatizados.
+
+7. Regras de negócio
+
+RN01 — Moeda
+Todos os valores serão expressos em reais brasileiros (BRL).
+
+RN02 — Valor positivo
+O valor de uma transação deve ser maior que zero.
+
+RN03 — Tipo
+Uma transação deve ser classificada como RECEITA ou DESPESA.
+
+RN04 — Saldo geral
+Saldo geral = soma de todas as receitas - soma de todas as despesas do usuário.
+
+RN05 — Totais mensais
+Receitas e despesas do dashboard devem considerar o mês e o ano atuais.
+
+RN06 — Categoria compatível
+Uma receita só pode utilizar categoria de receita; uma despesa só pode utilizar categoria de despesa.
+
+RN07 — Propriedade
+Cada transação pertence a um único usuário.
+
+RN08 — Data
+A data da transação não pode ser inválida. Transações futuras serão permitidas.
+
+RN09 — Exclusão
+Excluir uma transação deve atualizar os totais e o saldo exibidos.
+
+RN10 — Saldo inicial
+A V1.0 não terá saldo inicial configurável nem integração com contas bancárias. O saldo será calculado exclusivamente a partir das transações cadastradas.
+
+8. Categorias iniciais
+
+Receitas:
+- Salário
+- Freelance
+- Investimentos
+- Outros
+
+Despesas:
+- Alimentação
+- Transporte
+- Moradia
+- Saúde
+- Educação
+- Lazer
+- Compras
+- Outros
+
+9. Modelo conceitual de dados
+
+User
+- id
+- name
+- email
+- password_hash
+- created_at
+
+Category
+- id
+- name
+- type
+
+Transaction
+- id
+- user_id
+- category_id
+- type
+- amount
+- description
+- transaction_date
+- created_at
+- updated_at
+
+Relacionamentos:
+- Um usuário pode possuir várias transações.
+- Uma categoria pode estar associada a várias transações.
+- Cada transação pertence a um usuário e a uma categoria.
+
+10. API prevista
+
+Autenticação
+- POST /auth/register
+- POST /auth/login
+- GET /auth/me
+
+Transações
+- GET /transactions
+- POST /transactions
+- GET /transactions/:id
+- PUT /transactions/:id
+- DELETE /transactions/:id
+
+Categorias
+- GET /categories
+
+Dashboard
+- GET /dashboard
+
+As rotas e os parâmetros exatos serão definidos na documentação da API durante a implementação.
+
+11. Telas previstas
+
+1. Login.
+2. Cadastro.
+3. Dashboard.
+4. Lista de transações.
+5. Cadastro e edição de transação.
+6. Perfil e logout.
+
+12. Critérios de aceitação
+
+A V1.0 será considerada funcional quando:
+- Um usuário conseguir criar conta e autenticar-se.
+- Um usuário conseguir cadastrar, consultar, editar e excluir suas transações.
+- Os filtros retornarem os registros correspondentes.
+- O saldo e os totais mensais refletirem as movimentações armazenadas.
+- Dados de usuários diferentes permanecerem isolados.
+- Valores inválidos forem rejeitados pelo backend.
+- O frontend consumir a API real, sem depender de dados fictícios para as funções principais.
+- Os dados persistirem no banco de dados.
+- Os testes essenciais passarem.
+- A documentação de instalação e execução estiver disponível no README.
+
+13. Tecnologias planejadas
+
+- Frontend: React + TypeScript + CSS.
+- Backend: Node.js + Express + TypeScript.
+- Banco de dados: MySQL.
+- ORM: Prisma.
+- Autenticação: JWT e bcrypt.
+- Testes: Jest.
+- Documentação da API: Swagger/OpenAPI.
+- Versionamento e colaboração: Git e GitHub.
+
+14. Fluxo de colaboração
+
+1. Criar uma Issue para cada tarefa.
+2. Criar uma branch a partir de develop.
+3. Implementar a funcionalidade.
+4. Fazer commits com mensagens descritivas.
+5. Enviar a branch ao GitHub.
+6. Abrir um Pull Request para develop.
+7. Solicitar revisão do outro desenvolvedor.
+8. Integrar após revisão e testes.
+
+A branch main será reservada para versões estáveis.
+
+15. Definição de concluído
+
+Uma funcionalidade só será considerada concluída quando estiver implementada, validada, testada quando aplicável, integrada à branch de desenvolvimento e documentada quando necessário.
+
+A versão 1.0.0 será publicada após o cumprimento dos critérios de aceitação, revisão final, documentação e preparação da release.
+
+16. Evoluções futuras
+
+Possíveis funcionalidades posteriores:
+- Categorias personalizadas.
+- Metas financeiras.
+- Orçamentos mensais.
+- Gráficos e relatórios avançados.
+- Transações recorrentes.
+- Exportação de dados.
